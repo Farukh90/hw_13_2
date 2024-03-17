@@ -17,6 +17,7 @@ def test_category_with_list():
 def test_product_float_price():
     return Product('киндер сюрприз', 'молочный шоколад, внутри игрушка', 120.2, 33)
 
+
 @pytest.fixture()
 def test_product_int_price():
     return Product('киндер сюрприз', 'молочный шоколад, внутри игрушка', 120, 33)
@@ -24,7 +25,28 @@ def test_product_int_price():
 
 @pytest.fixture()
 def test_category_check_counts():
-    return Category('Шоколадная продукция', 'продукция из фабрики уилли уонка', ['снукерс', 'киндер сюрприз'])
+    test_prod_1 = Product('test1', 'something', 33.33, 333)
+    test_prod_2 = Product('test2', 'something', 32.3, 222)
+    return Category('Шоколадная продукция', 'продукция из фабрики уилли уонка', [test_prod_1, test_prod_2])
+
+
+@pytest.fixture()
+def reset_category_counts():
+    Category.categories_count = 0
+    Category.unique_products_count = 0
+
+
+@pytest.fixture()
+def test_get_prod_list():
+    test_prod_1 = Product('test1', 'something', 33.33, 333)
+    test_prod_2 = Product('test2', 'something', 32.3, 222)
+    test = Category('Шоколадная продукция', 'продукция из фабрики уилли уонка', [test_prod_1, test_prod_2])
+    return test.print_products
+
+
+@pytest.fixture()
+def test_price_set():
+    return Product('test1', 'something', 33.33, 333)
 
 
 def test_init_without_list(test_category_without_list):
@@ -47,6 +69,7 @@ def test_init_float_price(test_product_float_price):
     assert test_product_float_price.price == 120.2
     assert test_product_float_price.in_stock == 33
 
+
 def test_init_int_price(test_product_int_price):
     '''инициализация с интовым аргументом стоимость '''
     assert test_product_int_price.name == 'киндер сюрприз'
@@ -54,7 +77,19 @@ def test_init_int_price(test_product_int_price):
     assert test_product_int_price.price == 120
     assert test_product_int_price.in_stock == 33
 
-def test_category_counts(test_category_check_counts):
+
+def test_category_counts(reset_category_counts, test_category_check_counts):
     '''чекаем корректность работы счетчиков. не знаю насколько неоходимо, на всякий случай'''
     assert test_category_check_counts.categories_count == 1
     assert test_category_check_counts.unique_products_count == 2
+
+
+def test_get_formatted_product_list(test_get_prod_list):
+    assert test_get_prod_list == ['test1, 33.33 руб. Остаток: 333 шт.', 'test2, 32.3 руб. Остаток: 222 шт.']
+
+
+def test_price_s(test_price_set):
+    test_price_set.price = 0
+    assert test_price_set.price == 33.33
+    test_price_set.price = -11
+    assert test_price_set.price == 33.33
