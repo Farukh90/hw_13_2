@@ -2,7 +2,6 @@ import pytest
 from src.classes import Category
 from src.classes import Product
 
-
 @pytest.fixture()
 def test_category_without_list():
     return Category('Шоколадная продукция', 'продукция из фабрики уилли уонка')
@@ -48,6 +47,15 @@ def test_get_prod_list():
 def test_price_set():
     return Product('test1', 'something', 33.33, 333)
 
+@pytest.fixture()
+def test_add_products():
+    test_prod_1 = Product('test1', 'something', 33.33, 333)
+    test_prod_2 = Product('test2', 'something', 32.3, 222)
+    test = Category('Шоколадная продукция', 'продукция из фабрики уилли уонка')
+    add_prod = test.add_products(test_prod_1, test_prod_2)
+    return test
+
+
 
 def test_init_without_list(test_category_without_list):
     '''инициализация без аргумента списка с продуктами'''
@@ -88,8 +96,14 @@ def test_get_formatted_product_list(test_get_prod_list):
     assert test_get_prod_list == ['test1, 33.33 руб. Остаток: 333 шт.', 'test2, 32.3 руб. Остаток: 222 шт.']
 
 
-def test_price_s(test_price_set):
+def test_prices(test_price_set):
     test_price_set.price = 0
     assert test_price_set.price == 33.33
     test_price_set.price = -11
     assert test_price_set.price == 33.33
+    test_price_set.price = 1
+    assert test_price_set.price == 1
+
+def test_add_product(test_add_products):
+    expected = ['test1, 33.33 руб. Остаток: 333 шт.', 'test2, 32.3 руб. Остаток: 222 шт.']
+    assert test_add_products.print_products == expected
