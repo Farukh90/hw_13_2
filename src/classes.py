@@ -16,16 +16,20 @@ class Category:
 
     def add_products(self, *args):
         self.__products.extend(args)
+        Category.unique_products_count += len(args)
 
     @property
     def print_products(self):
-        all_products = []
-        for product in self.__products:
-            all_products.append(f'{product.name}, {product.price} руб. Остаток: {product.in_stock} шт.')
-        return all_products
+        return '\n'.join(map(str, self.__products))
 
-    def __repr__(self):
-        return f'{self.name}, {self.price} руб. Остаток: {self.in_stock} шт.'
+    def __len__(self):
+        total_stock = 0
+        for el in self.__products:
+            total_stock += el.in_stock
+        return total_stock
+
+    def __str__(self):
+        return f'{self.name}, количество продуктов: {len(self)} шт.'
 
 
 class Product:
@@ -37,8 +41,11 @@ class Product:
         self._price = price
         self.in_stock = in_stock
 
-    # def __repr__(self):
-    #     return f'{self.name}, {self.description}'
+    def __str__(self):
+        return f'{self.name}, {self.price} руб. Остаток: {self.in_stock} шт.'
+
+    def __add__(self, other):
+        return self._price * self.in_stock + other.price * other.in_stock
 
     @classmethod
     def create_prod(cls, name: str, description: str, _price: float, in_stock: int):
@@ -54,5 +61,3 @@ class Product:
             print('введена некорректная цена')
         else:
             self._price = new_price
-
-
