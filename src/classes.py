@@ -15,8 +15,12 @@ class Category:
         return self.__products
 
     def add_products(self, *args):
-        self.__products.extend(args)
-        Category.unique_products_count += len(args)
+        for product in args:
+            if isinstance(product, Product):
+                self.__products.append(product)
+                Category.unique_products_count += 1
+            else:
+                print(f"нельзя добавить объект {product}")
 
     @property
     def print_products(self):
@@ -35,11 +39,12 @@ class Category:
 class Product:
     '''хранение информации о товаре'''
 
-    def __init__(self, name: str, description: str, price: float, in_stock: int):
+    def __init__(self, name: str, description: str, price: float, in_stock: int, color: str):
         self.name = name
         self.description = description
         self._price = price
         self.in_stock = in_stock
+        self.color = color
 
     def __str__(self):
         return f'{self.name}, {self.price} руб. Остаток: {self.in_stock} шт.'
@@ -61,3 +66,33 @@ class Product:
             print('введена некорректная цена')
         else:
             self._price = new_price
+
+
+class Smartphone(Product):
+    def __init__(self, name, description, price, in_stock, color, perfomance: int, model: str, storage_capacity: int):
+        super().__init__(name, description, price, in_stock, color)
+        self.perfomance = perfomance
+        self.model = model
+        self.storage_capacity = storage_capacity
+
+    def __add__(self, other):
+        if isinstance(other, Smartphone):
+            return self._price * self.in_stock + other.price * other.in_stock
+        else:
+            raise TypeError
+
+
+class GrassLawns(Product):
+    def __init__(self, name, description, price, in_stock, color, made_in: str, germination: int):
+        super().__init__(name, description, price, in_stock, color)
+        self.made_in = made_in
+        self.germination = germination
+
+    def __add__(self, other):
+        if isinstance(other, GrassLawns):
+            return self._price * self.in_stock + other.price * other.in_stock
+        else:
+            raise TypeError
+
+
+

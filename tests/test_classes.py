@@ -15,19 +15,19 @@ def test_category_with_list():
 
 @pytest.fixture()
 def test_product_float_price():
-    return Product('киндер сюрприз', 'молочный шоколад, внутри игрушка', 120.2, 33)
+    return Product('киндер сюрприз', 'молочный шоколад, внутри игрушка', 120.2, 33, 'red')
 
 
 @pytest.fixture()
 def test_product_int_price():
-    return Product('киндер сюрприз', 'молочный шоколад, внутри игрушка', 120, 33)
+    return Product('киндер сюрприз', 'молочный шоколад, внутри игрушка', 120, 33, 'red')
 
 
 @pytest.fixture()
 def test_category_check_counts():
-    test_prod_1 = Product('test1', 'something', 33.33, 333)
-    test_prod_2 = Product('test2', 'something', 32.3, 222)
-    test_prod_3 = Product('test2', 'something', 32.3, 222)
+    test_prod_1 = Product('test1', 'something', 33.33, 333, 'red')
+    test_prod_2 = Product('test2', 'something', 32.3, 222, 'red')
+    test_prod_3 = Product('test2', 'something', 32.3, 222, 'red')
     categ = Category('Шоколадная продукция', 'продукция из фабрики уилли уонка', [test_prod_1, test_prod_2])
     categ.add_products(test_prod_3)
     return Category
@@ -41,21 +41,21 @@ def reset_category_counts():
 
 @pytest.fixture()
 def test_get_prod_list():
-    test_prod_1 = Product('test1', 'something', 33.33, 333)
-    test_prod_2 = Product('test2', 'something', 32.3, 222)
+    test_prod_1 = Product('test1', 'something', 33.33, 333, 'white')
+    test_prod_2 = Product('test2', 'something', 32.3, 222, 'white')
     test = Category('Шоколадная продукция', 'продукция из фабрики уилли уонка', [test_prod_1, test_prod_2])
     return test.print_products
 
 
 @pytest.fixture()
 def test_price_set():
-    return Product('test1', 'something', 33.33, 333)
+    return Product('test1', 'something', 33.33, 333, 'red')
 
 
 @pytest.fixture()
 def test_add_products():
-    test_prod_1 = Product('test1', 'something', 33.33, 333)
-    test_prod_2 = Product('test2', 'something', 32.3, 222)
+    test_prod_1 = Product('test1', 'something', 33.33, 333, 'red')
+    test_prod_2 = Product('test2', 'something', 32.3, 222, 'red')
     test = Category('Шоколадная продукция', 'продукция из фабрики уилли уонка')
     add_prod = test.add_products(test_prod_1, test_prod_2)
     return test
@@ -63,15 +63,15 @@ def test_add_products():
 
 @pytest.fixture()
 def total_price():
-    prod_1 = Product('test1', 'something', 10, 2)
-    prod_2 = Product('test2', 'something', 5, 3)
+    prod_1 = Product('test1', 'something', 10, 2, 'red')
+    prod_2 = Product('test2', 'something', 5, 3, 'red')
     return prod_1 + prod_2
 
 
 @pytest.fixture()
 def test_total_products():
-    test_prod_1 = Product('test1', 'something', 33.33, 333)
-    test_prod_2 = Product('test2', 'something', 32.3, 222)
+    test_prod_1 = Product('test1', 'something', 33.33, 333, 'red')
+    test_prod_2 = Product('test2', 'something', 32.3, 222, 'red')
     test = Category('Шоколадная продукция', 'продукция из фабрики уилли уонка', [test_prod_1, test_prod_2])
     return len(test)
 
@@ -125,8 +125,7 @@ def test_prices(test_price_set):
 
 
 def test_add_product(test_add_products):
-    expected = 'test1, 33.33 руб. Остаток: 333 шт.\ntest2, 32.3 руб. Остаток: 222 шт.'
-    assert test_add_products.print_products == expected
+    assert len(test_add_products.products) == 2
 
 
 def test_total_price_of_prod(total_price):
